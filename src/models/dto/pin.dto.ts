@@ -1,22 +1,22 @@
 import { IsNotEmpty } from "class-validator";
 
 export class PinDTO {
-    @IsNotEmpty({
+    /*@IsNotEmpty({
         message: 'pin cant be empty',
         context: {
           errorCode: 400,
           developerNote: 'The validated string must contain characters.',
         },
-      })
+      })*/
     title: string;
 
-    @IsNotEmpty({
+    /*@IsNotEmpty({
         message: 'description cant be empty',
         context: {
           errorCode: 400,
           developerNote: 'The validated string must contain characters.',
         },
-      })
+      })*/
     description: string;
 
 }

@@ -1,32 +1,32 @@
 import { IsAlphanumeric, IsNotEmpty } from "class-validator";
 
 export class UserDTO {
-    @IsNotEmpty({
+    /*@IsNotEmpty({
       message: 'login cant be empty',
       context: {
         errorCode: 400,
         developerNote: 'The validated string must contain characters.',
       },
-    })
+    })*/
     login: string;
   
-    @IsNotEmpty({
+   /* @IsNotEmpty({
       message: 'password cant be empty',
       context: {
         errorCode: 400,
         developerNote: 'The validated string must contain characters.',
       },
     })
-    @IsAlphanumeric()
+    @IsAlphanumeric()*/
     password: string;
   
-    @IsNotEmpty({
+    /*@IsNotEmpty({
         message: 'name cant be empty',
         context: {
           errorCode: 400,
           developerNote: 'The validated string must contain characters.',
         },
       })
-      @IsAlphanumeric()
+      @IsAlphanumeric()*/
       name: string;
   }

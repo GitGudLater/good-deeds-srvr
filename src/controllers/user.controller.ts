@@ -16,6 +16,8 @@ export class UserController {
     return await this.userService.getUsers();
   }
 
+
+
   //@UseGuards(JwtAuthGuard)
   @Get(':login')
   async getUserByLogin(@Param('login') login: string): Promise<User> {

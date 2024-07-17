@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { IPin } from 'src/models/interfaces/pin.interface';
 
-@Entity('users')
+@Entity('pins')
 export class Pin implements IPin {
   @PrimaryGeneratedColumn()
   id: string;
@@ -17,8 +17,8 @@ export class Pin implements IPin {
   isDone: boolean;
 
   @ManyToOne(() => User, (user) => user.pins, {
-    cascade: true,
+    //cascade: true,
     onDelete: 'CASCADE',
   })
-  user: User
+  user: User;
 }
