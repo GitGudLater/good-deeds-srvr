@@ -3,6 +3,5 @@ export interface IUser {
     login: string;
     name: string;
     password: string;
-    link:string;
     isDeleted: boolean;
   }

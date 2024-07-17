@@ -17,20 +17,15 @@ export class User implements IUser {
   password: string;
 
   @Column()
-  link: string;
-
-  @Column()
   isDeleted: boolean;
 
   @OneToMany(() => Pin, (pin) => pin.user, {
     onDelete:"SET NULL",
-    cascade: true
   })
   pins: Pin[]
 
   @ManyToMany(() => User, (user) => user.id, {
     onDelete:"SET NULL",
-    cascade: true
   })
   @JoinTable({
     name: "user-friends",
