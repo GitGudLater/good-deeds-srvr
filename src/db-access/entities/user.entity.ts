@@ -20,6 +20,7 @@ export class User implements IUser {
   isDeleted: boolean;
 
   @OneToMany(() => Pin, (pin) => pin.user, {
+    cascade: true,
     onDelete:"SET NULL",
   })
   pins: Pin[]
