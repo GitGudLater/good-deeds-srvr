@@ -19,11 +19,20 @@ export class DBDalService {
     return this.usersRepository.findOneBy({ login: userLogin });
   }
 
+  async selectUserIdByLogin(userLogin: string): Promise<string> {
+    const user = await this.usersRepository.findOneBy({ login: userLogin });
+    return user.id;
+  }
+
   selectUserById(userId: string): Promise<User> {
     return this.usersRepository.findOneBy({ id: userId });
   }
   selectUsers(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.usersRepository.find({
+      relations: {
+        users: true
+      }
+    });
   }
   async insertUser(newUser: User): Promise<User | null> {
     const existedUser = await this.selectUserByLogin(newUser.login);
@@ -43,13 +52,18 @@ export class DBDalService {
     return this.selectUserById(userId);
   }
 
-  async addFriendToUser(userId: string, friendLink: string): Promise<User> {
+  async addFriendToUser(userlogin: string, friendLink: string) {
     let friend = await this.selectUserByLogin(friendLink);
-    let user = await this.selectUserById(userId);
+    let user = await this.selectUserByLogin(userlogin);
     user.users.push(friend);
-    await this.usersRepository.update({ id: userId }, { ...user });
-    return this.selectUserById(userId);
+    this.usersRepository.update({ login: userlogin }, { ...user });
+    //return this.selectUserByLogin(userlogin);
   }
+
+  /*async selectUserFriends(userlogin: string) {
+    let userFriends = await this.usersRepository.findBy({})
+  }*/
+
   async removeFriendFromUser(userId: string, friendLink: string): Promise<User> {
     let friend = await this.selectUserByLogin(friendLink);
     let user = await this.selectUserById(userId);
