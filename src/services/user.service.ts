@@ -18,7 +18,7 @@ export class UserService {
     return this.dal.selectUserById(userId);
   }
   findUserIdByLogin(login: string): Promise<string> {
-    return this.dal.selectUserByLogin(login).then(user => user.id);
+    return this.dal.selectUserIdByLogin(login);
   }
   getUsers(): Promise<User[]> {
     return this.dal.selectUsers();

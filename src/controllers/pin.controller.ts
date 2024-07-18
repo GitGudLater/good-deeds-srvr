@@ -32,8 +32,8 @@ export class PinController {
   }
 
   @UseGuards(AuthGuard)
-  @Put(':login')
-  updateUser(@Param('login') login: string, @Body() updatedPinStatus: boolean) {
-    return this.pinService.updatePin(login, updatedPinStatus);
+  @Put(':pinId')
+  updatePin(@Param('pinId') pinId: string, @Body() updatedPinStatus: boolean) {
+    return this.pinService.updatePin(pinId, updatedPinStatus);
   }
 }
