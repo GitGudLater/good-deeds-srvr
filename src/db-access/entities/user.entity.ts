@@ -1,11 +1,11 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Pin } from './pin.entuty';
 import { IUser } from 'src/models/interfaces/user.interface';
 
 @Entity('users')
 export class User implements IUser {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   name: string;
@@ -19,14 +19,12 @@ export class User implements IUser {
   @Column()
   isDeleted: boolean;
 
-  @OneToMany(() => Pin, (pin) => pin.user, {
-    cascade: true,
-    onDelete:"SET NULL",
-  })
+  @OneToMany(() => Pin, (pin) => pin.user)
+  @JoinColumn()
   pins: Pin[]
 
   @ManyToMany(() => User, (user) => user.id, {
-    onDelete:"SET NULL",
+    cascade: true,
   })
   @JoinTable({
     name: "user-friends",

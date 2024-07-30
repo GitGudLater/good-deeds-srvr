@@ -1,11 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './user.entity';
 import { IPin } from 'src/models/interfaces/pin.interface';
 
 @Entity('pins')
 export class Pin implements IPin {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   title: string;
@@ -16,9 +16,11 @@ export class Pin implements IPin {
   @Column()
   isDone: boolean;
 
-  @ManyToOne(() => User, (user) => user.pins, {
+  @ManyToOne(() => User, {
     //cascade: true,
-    onDelete: 'CASCADE',
+    //onDelete: 'CASCADE',
+    //onUpdate: 'CASCADE'
   })
+  @JoinColumn({ name: 'user', referencedColumnName: 'id' })
   user: User;
 }
