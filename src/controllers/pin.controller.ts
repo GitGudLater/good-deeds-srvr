@@ -19,21 +19,20 @@ export class PinController {
   @UseGuards(AuthGuard)
   @Post(':login')
   @HttpCode(201)
-  addPin(@Param('login') login: string, @Body() newPin: PinDTO, @Res() response: Response) {
-    this.pinService.addPin(newPin, login);
-
+  addPin(@Param('login') login: string, @Body() newPin, @Res() response: Response) {
+    this.pinService.addPin(newPin.newPin, login);
   }
 
   @UseGuards(AuthGuard)
   @Delete(':pinid')
   @HttpCode(200)
-  async markAsDelete(@Param('pinid') pinid: string) {
+  async markAsDelete(@Param('pinid') pinid: number) {
     this.pinService.deletePin(pinid);
   }
 
   @UseGuards(AuthGuard)
   @Put(':pinId')
-  updatePin(@Param('pinId') pinId: string, @Body() updatedPinStatus: boolean) {
+  updatePin(@Param('pinId') pinId: number, @Body() updatedPinStatus: boolean) {
     return this.pinService.updatePin(pinId, updatedPinStatus);
   }
 }

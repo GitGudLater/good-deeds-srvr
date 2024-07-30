@@ -19,12 +19,12 @@ export class DBDalService {
     return this.usersRepository.findOneBy({ login: userLogin });
   }
 
-  async selectUserIdByLogin(userLogin: string): Promise<string> {
+  async selectUserIdByLogin(userLogin: string): Promise<number> {
     const user = await this.usersRepository.findOneBy({ login: userLogin });
     return user.id;
   }
 
-  selectUserById(userId: string): Promise<User> {
+  selectUserById(userId: number): Promise<User> {
     return this.usersRepository.findOneBy({ id: userId });
   }
   selectUsers(): Promise<User[]> {
@@ -41,15 +41,15 @@ export class DBDalService {
         return newUser;
     }
     else {
+      console.log(null);
         return null;
     }
   }
-  deleteUser(userId: string) {
-    this.usersRepository.update({ id: userId }, { isDeleted: true });
+  deleteUser(login: string) {
+    this.usersRepository.update({ login }, { isDeleted: true });
   }
-  async updateUser(userId: string, updatedUser: UserDTO): Promise<User> {
-    await this.usersRepository.update({ id: userId }, { ...updatedUser });
-    return this.selectUserById(userId);
+  async updateUser(userLogin: string, updatedUser: UserDTO) {
+    this.usersRepository.update({ login: userLogin }, { name:updatedUser.name, password:updatedUser.password });
   }
 
   async addFriendToUser(userlogin: string, friendLink: string) {
@@ -64,11 +64,11 @@ export class DBDalService {
     let userFriends = await this.usersRepository.findBy({})
   }*/
 
-  async removeFriendFromUser(userId: string, friendLink: string): Promise<User> {
+  async removeFriendFromUser(userId: number, friendLink: string): Promise<User> {
     let friend = await this.selectUserByLogin(friendLink);
     let user = await this.selectUserById(userId);
     let newFriendsCollection = user.users.map(selectedFriend => {if(selectedFriend.id !== friend.id) return selectedFriend });
-    await this.usersRepository.update({ id: userId }, { ...user, users: newFriendsCollection });
+    await this.usersRepository.update({ id: userId }, { users: newFriendsCollection });
     return this.selectUserById(userId);
   }
 
@@ -76,25 +76,24 @@ export class DBDalService {
     return await this.pinsRepository.findBy({user: {login: selectedUserLogin}});
   }
 
-  async connectPinToUser(userId: string, pin: Pin) {
-    this.usersRepository.findOneBy({ id: userId }).then(user => {
-            let targetUser = user;
-            targetUser.pins.push(pin);
-            this.usersRepository.update({ id: targetUser.id }, targetUser)
+  async connectPinToUser(userLogin: string, pin: Pin) {
+    this.usersRepository.findOneBy({ login: userLogin }).then(user => {
+            pin.user = user;
+            this.pinsRepository.insert(pin);
         }
     );
   }
 
-  async updatePin(pinStatus: boolean, pinId: string): Promise<Pin> {
+  async updatePin(pinStatus: boolean, pinId: number): Promise<Pin> {
     await this.pinsRepository.update({ id: pinId }, { isDone: pinStatus });
     return this.selectPinById(pinId);
   }
 
-  selectPinById(pinId: string): Promise<Pin> {
+  selectPinById(pinId: number): Promise<Pin> {
     return this.pinsRepository.findOneBy({ id: pinId });
   }
 
-  async deletePin(pinId: string) {
+  async deletePin(pinId: number) {
     this.selectPinById(pinId).then(pin => {
         this.pinsRepository.remove(pin);
     })

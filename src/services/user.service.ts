@@ -13,11 +13,11 @@ export class UserService {
     return this.dal.selectUserByLogin(userLogin);
   }
 
-  findUserById(userId: string): Promise<User> {
+  findUserById(userId: number): Promise<User> {
 
     return this.dal.selectUserById(userId);
   }
-  findUserIdByLogin(login: string): Promise<string> {
+  findUserIdByLogin(login: string): Promise<number> {
     return this.dal.selectUserIdByLogin(login);
   }
   getUsers(): Promise<User[]> {
@@ -27,17 +27,15 @@ export class UserService {
   addUser(newUser: UserDTO): Promise<User | null> {
     const user = {
       ...newUser,
-      id: crypto.randomUUID(),
       isDeleted: false,
     } as User;
-    let insertedUser: Promise<User | null> = this.dal.insertUser(user);
-    return insertedUser;
+    return this.dal.insertUser(user);;
   }
-  deleteUser(userId: string) {
-    this.dal.deleteUser(userId);
+  deleteUser(login: string) {
+    this.dal.deleteUser(login);
   }
-  updateUser(login: string, updatedUser: UserDTO): Promise<User> {
-    return this.findUserIdByLogin(login).then(userId => this.dal.updateUser(userId, updatedUser));
+  updateUser(login: string, updatedUser: UserDTO) {
+    this.dal.updateUser(login, updatedUser);
   }
 
 }

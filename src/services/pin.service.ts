@@ -13,19 +13,20 @@ export class PinService {
     return await this.dal.selectPins(userLogin);
   }
   
-  addPin(newPin: PinDTO, userId: string) {
+  addPin(newPin: PinDTO, userLogin: string) {
+    const {title, description} = newPin;
     const pin = {
-        ...newPin,
-        id: crypto.randomUUID(),
-        isDone: false,
-      } as Pin;
-      this.dal.connectPinToUser( userId, pin);
-      //return pin;
+      title,
+      description,
+      isDone: false,
+    } as Pin;
+    console.log(pin);
+    this.dal.connectPinToUser( userLogin, pin);
   }
-  async updatePin(pinId: string, pinStatus: boolean): Promise<Pin> {
+  async updatePin(pinId: number, pinStatus: boolean): Promise<Pin> {
     return await this.dal.updatePin(pinStatus, pinId);
   }
-  deletePin(pinId: string) {
+  deletePin(pinId: number) {
     this.dal.deletePin(pinId);
   }
 }

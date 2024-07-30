@@ -25,14 +25,9 @@ export class UserController {
   }
 
   @Post()
-  @HttpCode(201)
-  addUser(@Body() newUser: UserDTO, @Res() response: Response) {
-    this.userService.addUser(newUser).then(user => {
-        user
-        ? response.status(HttpStatus.CREATED).send('User created')
-        : response.status(HttpStatus.CONFLICT).send('User login already exist');
-    })
-
+  @HttpCode(HttpStatus.CREATED)
+  async addUser(@Body() newUser: UserDTO, @Res() response: Response) {
+    return await this.userService.addUser(newUser);
   }
 
   @UseGuards(AuthGuard)
