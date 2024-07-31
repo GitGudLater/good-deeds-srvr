@@ -56,7 +56,7 @@ export class DBDalService {
   async addFriendToUser(userlogin: string, friendLink: string) {
     let friend = await this.selectUserByLogin(friendLink);
     let user = await this.usersRepository.findOne({where: {login: userlogin}, relations:['users']});
-    if(friend) {
+    if(friend && !user.users.includes(friend)) {
       user.users.push(friend);
       this.usersRepository.save(user);
     }
