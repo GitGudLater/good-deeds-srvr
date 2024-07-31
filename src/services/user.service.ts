@@ -38,4 +38,17 @@ export class UserService {
     this.dal.updateUser(login, updatedUser);
   }
 
+  addFriendToUser(login: string, friendLogin: string) {
+    this.dal.addFriendToUser(login, friendLogin);
+  }
+
+  removeFriend(login: string, friendLogin: string) {
+    this.dal.removeFriendFromUser(login, friendLogin);
+  }
+
+  async selectUserFriends(login: string) {
+    const friends = await this.dal.selectUserFriends(login);
+    return friends;
+  }
+
 }

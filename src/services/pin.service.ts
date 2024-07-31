@@ -20,7 +20,6 @@ export class PinService {
       description,
       isDone: false,
     } as Pin;
-    console.log(pin);
     this.dal.connectPinToUser( userLogin, pin);
   }
   async updatePin(pinId: number, pinStatus: boolean): Promise<Pin> {
