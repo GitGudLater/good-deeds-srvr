@@ -15,7 +15,7 @@ export class DBDalService {
     private pinsRepository: Repository<Pin>,
   ) {}
 
-  selectUserByLogin(userLogin: string): Promise<User> {
+  selectUserByLogin(userLogin: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ login: userLogin });
   }
 
@@ -49,14 +49,30 @@ export class DBDalService {
     this.usersRepository.update({ login }, { isDeleted: true });
   }
   async updateUser(userLogin: string, updatedUser: UserDTO) {
-    this.usersRepository.update({ login: userLogin }, { name:updatedUser.name, password:updatedUser.password });
+    const {id, isDeleted} = await this.selectUserByLogin(userLogin);
+    this.usersRepository.update({ id }, {id, login:userLogin, isDeleted, name:updatedUser.name, password:updatedUser.password });
+    /*await this.usersRepository.createQueryBuilder()
+      .update(User)
+      .set({
+        id,
+        isDeleted,
+        login: userLogin,
+        name: updatedUser.name,
+        password: updatedUser.password,
+      })
+      .where('id = :usersTargetId', { usersTargetId: id})
+      .execute();*/
   }
 
   async addFriendToUser(userlogin: string, friendLink: string) {
     let friend = await this.selectUserByLogin(friendLink);
     let user = await this.selectUserByLogin(userlogin);
-    user.users.push(friend);
-    this.usersRepository.update({ login: userlogin }, { ...user });
+    console.log(`dal add fr to usr - ${friend} to ${user}`)
+
+    if(friend) {
+      user.users.push(friend);
+      this.usersRepository.update({ login: userlogin },  user );
+    }
     //return this.selectUserByLogin(userlogin);
   }
 
@@ -64,12 +80,18 @@ export class DBDalService {
     let userFriends = await this.usersRepository.findBy({})
   }*/
 
-  async removeFriendFromUser(userId: number, friendLink: string): Promise<User> {
-    let friend = await this.selectUserByLogin(friendLink);
-    let user = await this.selectUserById(userId);
-    let newFriendsCollection = user.users.map(selectedFriend => {if(selectedFriend.id !== friend.id) return selectedFriend });
-    await this.usersRepository.update({ id: userId }, { users: newFriendsCollection });
-    return this.selectUserById(userId);
+  async removeFriendFromUser(login: string, friendLink: string) {
+    const friend = await this.selectUserByLogin(friendLink);
+    const user = await this.selectUserByLogin(login);
+    const newFriendsCollection = user.users.filter(selectedFriend => selectedFriend.id !== friend.id);
+    user.users = newFriendsCollection;
+    await this.usersRepository.update({ login }, user);
+  }
+
+  async selectUserFriends(login: string):Promise<User[]> {
+    const friends = await this.usersRepository.findOneBy({login});
+    console.log(`dal - ${friends.users}`);
+    return await friends.users;
   }
 
   async selectPins(selectedUserLogin: string): Promise<Pin[]> {
