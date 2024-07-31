@@ -45,8 +45,9 @@ export class UserController {
   
   @UseGuards(AuthGuard)
   @Put('friend')
-  addFriendToUser(@Body() logins: {userLogin: string, friendsLogin: string}) {
-    return this.userService.addFriendToUser(logins.userLogin, logins.friendsLogin);
+  addFriendToUser(@Body() body) {
+    console.log(body);
+    return this.userService.addFriendToUser(body.logins.userLogin, body.logins.friendsLogin);
   }
 
   @UseGuards(AuthGuard)
@@ -57,7 +58,7 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Delete('friend')
-  deleteFriendFromUser(@Body() logins: {userLogin: string, friendsLogin: string}) {
-    return this.userService.removeFriend(logins.userLogin, logins.friendsLogin);
+  deleteFriendFromUser(@Body() body) {
+    return this.userService.removeFriend(body.logins.userLogin, body.logins.friendsLogin);
   }
 }
