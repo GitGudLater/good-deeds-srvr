@@ -49,14 +49,26 @@ export class DBDalService {
     this.usersRepository.update({ login }, { isDeleted: true });
   }
   async updateUser(userLogin: string, updatedUser: UserDTO) {
-    this.usersRepository.update({ login: userLogin }, { name:updatedUser.name, password:updatedUser.password });
+    const {id, isDeleted} = await this.selectUserByLogin(userLogin);
+    this.usersRepository.update({ id }, {id, login:userLogin, isDeleted, name:updatedUser.name, password:updatedUser.password });
+    /*await this.usersRepository.createQueryBuilder()
+      .update(User)
+      .set({
+        id,
+        isDeleted,
+        login: userLogin,
+        name: updatedUser.name,
+        password: updatedUser.password,
+      })
+      .where('id = :usersTargetId', { usersTargetId: id})
+      .execute();*/
   }
 
   async addFriendToUser(userlogin: string, friendLink: string) {
     let friend = await this.selectUserByLogin(friendLink);
     let user = await this.selectUserByLogin(userlogin);
     user.users.push(friend);
-    this.usersRepository.update({ login: userlogin }, { ...user });
+    this.usersRepository.update({ login: userlogin },  user );
     //return this.selectUserByLogin(userlogin);
   }
 

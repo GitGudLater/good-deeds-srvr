@@ -13,7 +13,9 @@ export class PinController {
   //@UseGuards(JwtAuthGuard)
   @Get(':login')
   async getPinsByLogin(@Param('login') login: string): Promise<Pin[]> {
+    const pins = await this.pinService.getUserPins(login);
     return await this.pinService.getUserPins(login);
+    console.log()
   }
 
   @UseGuards(AuthGuard)
@@ -32,7 +34,8 @@ export class PinController {
 
   @UseGuards(AuthGuard)
   @Put(':pinId')
-  updatePin(@Param('pinId') pinId: number, @Body() updatedPinStatus: boolean) {
-    return this.pinService.updatePin(pinId, updatedPinStatus);
+  updatePin(@Param('pinId') pinId: number, @Body() data: any) {
+    console.log(data.updatedPinStatus);
+    return this.pinService.updatePin(pinId, data.updatedPinStatus);
   }
 }
