@@ -52,7 +52,6 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('friend/:login')
   selectUserFriends(@Param('login') login: string) {
-    console.log(`login ${login} - controller`);
     return this.userService.selectUserFriends(login);
   }
 
