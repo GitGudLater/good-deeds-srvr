@@ -51,46 +51,27 @@ export class DBDalService {
   async updateUser(userLogin: string, updatedUser: UserDTO) {
     const {id, isDeleted} = await this.selectUserByLogin(userLogin);
     this.usersRepository.update({ id }, {id, login:userLogin, isDeleted, name:updatedUser.name, password:updatedUser.password });
-    /*await this.usersRepository.createQueryBuilder()
-      .update(User)
-      .set({
-        id,
-        isDeleted,
-        login: userLogin,
-        name: updatedUser.name,
-        password: updatedUser.password,
-      })
-      .where('id = :usersTargetId', { usersTargetId: id})
-      .execute();*/
   }
 
   async addFriendToUser(userlogin: string, friendLink: string) {
     let friend = await this.selectUserByLogin(friendLink);
-    let user = await this.selectUserByLogin(userlogin);
-    console.log(`dal add fr to usr - ${friend} to ${user}`)
-
+    let user = await this.usersRepository.findOne({where: {login: userlogin}, relations:['users']});
     if(friend) {
       user.users.push(friend);
-      this.usersRepository.update({ login: userlogin },  user );
+      this.usersRepository.save(user);
     }
-    //return this.selectUserByLogin(userlogin);
   }
-
-  /*async selectUserFriends(userlogin: string) {
-    let userFriends = await this.usersRepository.findBy({})
-  }*/
 
   async removeFriendFromUser(login: string, friendLink: string) {
     const friend = await this.selectUserByLogin(friendLink);
-    const user = await this.selectUserByLogin(login);
+    let user = await this.usersRepository.findOne({where: {login}, relations:['users']});
     const newFriendsCollection = user.users.filter(selectedFriend => selectedFriend.id !== friend.id);
     user.users = newFriendsCollection;
-    await this.usersRepository.update({ login }, user);
+    await this.usersRepository.save(user);
   }
 
   async selectUserFriends(login: string):Promise<User[]> {
-    const friends = await this.usersRepository.findOneBy({login});
-    console.log(`dal - ${friends.users}`);
+    const friends = await this.usersRepository.findOne({where: {login}, relations:['users']});
     return await friends.users;
   }
 
